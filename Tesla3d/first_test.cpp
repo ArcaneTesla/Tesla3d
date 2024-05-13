@@ -1,10 +1,10 @@
 #include "first_test.hpp"
 
-namespace live {
+namespace lve {
 
 	void FirstApp::run() {
 
-		while (!liveWindow.shouldClose()) {
+		while (!lveWindow.shouldClose()) {
 			glfwPollEvents();
 		}
 	}

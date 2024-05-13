@@ -4,17 +4,19 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-namespace live {
+namespace lve {
 
-	class LiveWindow {
+	class LveWindow {
 	public:
-		LiveWindow(int w, int h, std::string name);
-		~LiveWindow();
+		LveWindow(int w, int h, std::string name);
+		~LveWindow();
 
-		LiveWindow(const LiveWindow&) = delete;
-		LiveWindow& operator=(const LiveWindow&) = delete;
+		LveWindow(const LveWindow&) = delete;
+		LveWindow& operator=(const LveWindow&) = delete;
 
 		bool shouldClose() { return glfwWindowShouldClose(window); }
+
+        void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 	private:
 

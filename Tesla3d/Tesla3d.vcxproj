@@ -136,12 +136,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="first_test.cpp" />
-    <ClCompile Include="live_window.cpp" />
+    <ClCompile Include="lve_window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="lve_pipeline.cpp" />
+    <ClCompile Include="lve_device.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_test.hpp" />
-    <ClInclude Include="live_window.hpp" />
+    <ClInclude Include="lve_window.hpp" />
+    <ClInclude Include="lve_pipeline.hpp" />
+    <ClInclude Include="lve_device.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\compile.bat" />
+    <None Include="shaders\simple_shader.frag" />
+    <None Include="shaders\simple_shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
