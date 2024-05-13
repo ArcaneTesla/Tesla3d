@@ -1,25 +1,25 @@
-#include "lve_pipeline.hpp"
+#include "tsl_pipeline.hpp"
 #include <fstream>
 #include <iostream>
 #include <cassert>
 
-namespace lve {
-    LvePipeline::LvePipeline(
-        LveDevice& device,
+namespace tsl {
+    TslPipeline::TslPipeline(
+        TslDevice& device,
         const std::string& vertFilepath,
         const std::string& fragFilepath, 
         const PipelineConfigInfo& configinfo) 
-        : lveDevice{device} {
+        : tslDevice{device} {
         createGraphicsPipeline(vertFilepath, fragFilepath, configinfo);
     }
 
-    LvePipeline::~LvePipeline() {
-        vkDestroyShaderModule(lveDevice.device(), vertShaderModule, nullptr);
-        vkDestroyShaderModule(lveDevice.device(), fragShaderModule, nullptr);
-        vkDestroyPipeline(lveDevice.device(), graphicsPipeline, nullptr);
+    TslPipeline::~TslPipeline() {
+        vkDestroyShaderModule(tslDevice.device(), vertShaderModule, nullptr);
+        vkDestroyShaderModule(tslDevice.device(), fragShaderModule, nullptr);
+        vkDestroyPipeline(tslDevice.device(), graphicsPipeline, nullptr);
     }
 
-    std::vector <char> LvePipeline::readFile(const std::string& filepath) {
+    std::vector <char> TslPipeline::readFile(const std::string& filepath) {
         std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
@@ -36,7 +36,7 @@ namespace lve {
    
     }
 
-    void LvePipeline::createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo) {
+    void TslPipeline::createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo) {
 
         assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline:: no pipelineLayout provided in configInfo");
         assert(configInfo.renderPass != VK_NULL_HANDLE && "Cannot create graphics pipeline:: no renderPass provided in configInfo");
@@ -99,27 +99,27 @@ namespace lve {
         pipelineInfo.basePipelineIndex = -1;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(lveDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(tslDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
             throw std::runtime_error("Ошибка:Не удалось создать графический конвеер!");
         }
     }
 
-    void LvePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {
+    void TslPipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         createInfo.codeSize = code.size();
         createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-        if (vkCreateShaderModule(lveDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) {
+        if (vkCreateShaderModule(tslDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) {
             throw std::runtime_error("Ошибка:Не удалось создать шейдерный модуль!");
         }
     }
 
-    void LvePipeline::bind(VkCommandBuffer commandBuffer) {
+    void TslPipeline::bind(VkCommandBuffer commandBuffer) {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
     }
 
-    PipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
+    PipelineConfigInfo TslPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
         PipelineConfigInfo configInfo{};
         
         configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

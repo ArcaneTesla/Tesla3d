@@ -136,18 +136,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="first_test.cpp" />
-    <ClCompile Include="lve_window.cpp" />
+    <ClCompile Include="tsl_window.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="lve_pipeline.cpp" />
-    <ClCompile Include="lve_device.cpp" />
-    <ClCompile Include="lve_swap_chain.cpp" />
+    <ClCompile Include="tsl_pipeline.cpp" />
+    <ClCompile Include="tsl_device.cpp" />
+    <ClCompile Include="tsl_swap_chain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_test.hpp" />
-    <ClInclude Include="lve_window.hpp" />
-    <ClInclude Include="lve_pipeline.hpp" />
-    <ClInclude Include="lve_device.hpp" />
-    <ClInclude Include="lve_swap_chain.hpp" />
+    <ClInclude Include="tsl_model.hpp" />
+    <ClInclude Include="tsl_window.hpp" />
+    <ClInclude Include="tsl_pipeline.hpp" />
+    <ClInclude Include="tsl_device.hpp" />
+    <ClInclude Include="tsl_swap_chain.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\compile.bat" />

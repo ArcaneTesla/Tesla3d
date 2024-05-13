@@ -4,12 +4,12 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-namespace lve {
+namespace tsl {
 
-	class LveWindow {
+	class TslWindow {
 	public:
-		LveWindow(int w, int h, std::string name);
-		~LveWindow();
+        TslWindow(int w, int h, std::string name);
+		~TslWindow();
 
 		bool shouldClose() { return glfwWindowShouldClose(window); }
         VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height) }; }

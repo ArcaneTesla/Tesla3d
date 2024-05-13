@@ -1,15 +1,15 @@
 #pragma once
 
-#include "lve_window.hpp"
-#include "lve_pipeline.hpp"
-#include "lve_device.hpp"
-#include "lve_swap_chain.hpp"
+#include "tsl_window.hpp"
+#include "tsl_pipeline.hpp"
+#include "tsl_device.hpp"
+#include "tsl_swap_chain.hpp"
 
 #include <memory>
 #include <vector>
 #include <array>
 
-namespace lve {
+namespace tsl {
 	class FirstApp {
 
 	public:
@@ -19,8 +19,8 @@ namespace lve {
         FirstApp();
         ~FirstApp();
 
-        FirstApp(const LveWindow&) = delete;
-        FirstApp& operator=(const LveWindow&) = delete;
+        FirstApp(const TslWindow&) = delete;
+        FirstApp& operator=(const TslWindow&) = delete;
 
 		void run();
 
@@ -31,10 +31,10 @@ namespace lve {
         void drawFrame();
 
 
-		LveWindow lveWindow{ WIDTH, HEIGHT, "First TEST app" };
-        LveDevice lveDevice{ lveWindow };
-        LveSwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
-        std::unique_ptr<LvePipeline> lvePipeline;
+		TslWindow tslWindow{ WIDTH, HEIGHT, "First TEST app" };
+        TslDevice tslDevice{ tslWindow };
+        TslSwapChain tslSwapChain{tslDevice, tslWindow.getExtent()};
+        std::unique_ptr<TslPipeline> tslPipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
 	};

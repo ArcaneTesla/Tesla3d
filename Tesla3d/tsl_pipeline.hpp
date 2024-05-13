@@ -1,11 +1,11 @@
 #pragma once
 
-#include "lve_device.hpp"
+#include "tsl_device.hpp"
 
 #include <string>
 #include <vector>
 
-namespace lve {
+namespace tsl {
 
     struct PipelineConfigInfo {
         VkViewport viewport;
@@ -21,18 +21,18 @@ namespace lve {
         uint32_t subpass = 0;
     };
 
-    class LvePipeline {
+    class TslPipeline {
 
     public:
-        LvePipeline(
-            LveDevice& device, 
+        TslPipeline(
+            TslDevice& device, 
             const std::string& vertFilepath, 
             const std::string& fragFilepath, 
             const PipelineConfigInfo& configinfo);
-        ~LvePipeline();
+        ~TslPipeline();
 
-        LvePipeline(const LvePipeline&) = delete;
-        void operator=(const LvePipeline&) = delete;
+        TslPipeline(const TslPipeline&) = delete;
+        void operator=(const TslPipeline&) = delete;
 
         void bind(VkCommandBuffer commandBuffer);
 
@@ -48,7 +48,7 @@ namespace lve {
 
         void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
-        LveDevice& lveDevice;
+        TslDevice& tslDevice;
         VkPipeline graphicsPipeline;
         VkShaderModule vertShaderModule;
         VkShaderModule fragShaderModule;

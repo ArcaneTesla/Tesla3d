@@ -1,7 +1,7 @@
 #include "first_test.hpp"
 #include <stdexcept>
 
-namespace lve {
+namespace tsl {
 
     FirstApp::FirstApp() {
         createPipelineLayout();
@@ -10,16 +10,16 @@ namespace lve {
     }
 
     FirstApp::~FirstApp() {
-        vkDestroyPipelineLayout(lveDevice.device(), pipelineLayout, nullptr);
+        vkDestroyPipelineLayout(tslDevice.device(), pipelineLayout, nullptr);
     }
 
 	void FirstApp::run() {
 
-		while (!lveWindow.shouldClose()) {
+		while (!tslWindow.shouldClose()) {
 			glfwPollEvents();
             drawFrame();
 		}
-        vkDeviceWaitIdle(lveDevice.device());
+        vkDeviceWaitIdle(tslDevice.device());
 	}
 
     void FirstApp::createPipelineLayout() {
@@ -30,28 +30,28 @@ namespace lve {
         pipelineLayoutInfo.pushConstantRangeCount = 0;
         pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-        if (vkCreatePipelineLayout(lveDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(tslDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("Ошибка:Не удалось создать схему конвеера!");
         }
     }
     void FirstApp::createPipeline() {
-        auto pipelineConfig = LvePipeline::defaultPipelineConfigInfo(lveSwapChain.width(), lveSwapChain.height());
-        pipelineConfig.renderPass = lveSwapChain.getRenderPass();
+        auto pipelineConfig = TslPipeline::defaultPipelineConfigInfo(tslSwapChain.width(), tslSwapChain.height());
+        pipelineConfig.renderPass = tslSwapChain.getRenderPass();
         pipelineConfig.pipelineLayout = pipelineLayout;
-        lvePipeline = std::make_unique<LvePipeline>(lveDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
+        tslPipeline = std::make_unique<TslPipeline>(tslDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
 
 
     }
     void FirstApp::createCommandBuffers(){
-        commandBuffers.resize(lveSwapChain.imageCount());
+        commandBuffers.resize(tslSwapChain.imageCount());
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandPool = lveDevice.getCommandPool();
+        allocInfo.commandPool = tslDevice.getCommandPool();
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
-        if (vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+        if (vkAllocateCommandBuffers(tslDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
             throw std::runtime_error("Ошибка:Не удалось выделить коммандный буфер!");
         }
 
@@ -64,11 +64,11 @@ namespace lve {
 
             VkRenderPassBeginInfo renderPassInfo{};
             renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-            renderPassInfo.renderPass = lveSwapChain.getRenderPass();
-            renderPassInfo.framebuffer = lveSwapChain.getFrameBuffer(i);
+            renderPassInfo.renderPass = tslSwapChain.getRenderPass();
+            renderPassInfo.framebuffer = tslSwapChain.getFrameBuffer(i);
 
             renderPassInfo.renderArea.offset = { 0,0 };
-            renderPassInfo.renderArea.extent = lveSwapChain.getSwapChainExtent();
+            renderPassInfo.renderArea.extent = tslSwapChain.getSwapChainExtent();
 
             std::array<VkClearValue, 2> clearValues{};
             clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
@@ -78,7 +78,7 @@ namespace lve {
 
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-            lvePipeline->bind(commandBuffers[i]);
+            tslPipeline->bind(commandBuffers[i]);
             vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 
             vkCmdEndRenderPass(commandBuffers[i]);
@@ -89,12 +89,12 @@ namespace lve {
     }
     void FirstApp::drawFrame(){
         uint32_t imageIndex;
-        auto result = lveSwapChain.acquireNextImage(&imageIndex);
+        auto result = tslSwapChain.acquireNextImage(&imageIndex);
         if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
             throw std::runtime_error("Ошибка:Не удалось получить образ цепи изображения!");
         }
 
-        result = lveSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+        result = tslSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
         if (result != VK_SUCCESS) {
             throw std::runtime_error("Ошибка:Не удалось вывести образ цепи изображения!");
         }
