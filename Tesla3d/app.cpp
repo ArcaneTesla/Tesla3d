@@ -1,11 +1,13 @@
 #include "app.hpp"
 
 #include "simple_render_system.hpp"
+#include "tsl_camera.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+
 
 #include <stdexcept>
 
@@ -17,12 +19,22 @@ namespace tsl {
 
 	void FirstApp::run() {
         SimpleRenderSystem simpleRenderSystem{ tslDevice, tslRenderer.getSwapChainRenderPass() };
+        TslCamera camera{};
+        camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
+        //camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
+
 		while (!tslWindow.shouldClose()) {
 			glfwPollEvents();
 
+            float aspect = tslRenderer.getAspectRatio();
+            //ортографика
+            //camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+            //перспектива
+            camera.setPerspectiveProjection(glm::radians(50.f),aspect,0.1f,10.f);
+
             if (auto commandBuffer = tslRenderer.beginFrame()) {
                 tslRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderObjects(commandBuffer, sceneObjects);
+                simpleRenderSystem.renderObjects(commandBuffer, sceneObjects, camera);
                 tslRenderer.endSwapChainRenderPass(commandBuffer);
                 tslRenderer.endFrame();
             }
@@ -90,7 +102,7 @@ namespace tsl {
         std::shared_ptr<TslModel> TslModel = createCubeModel(tslDevice, { .0f,.0f,.0f });
         auto cube = TslSceneObject::createObject();
         cube.model = TslModel;
-        cube.transform.translation = { .0f,.0f,.5f };
+        cube.transform.translation = { .0f,.0f,2.5f };
         cube.transform.scale = { .5f,.5f,.5f };
         sceneObjects.push_back(std::move(cube));
        

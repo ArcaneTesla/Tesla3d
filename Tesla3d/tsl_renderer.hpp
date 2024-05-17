@@ -23,6 +23,7 @@ namespace tsl {
         TslRenderer& operator=(const TslRenderer&) = delete;
 
         VkRenderPass getSwapChainRenderPass() const { return tslSwapChain->getRenderPass(); }
+        float getAspectRatio() const { return tslSwapChain->extentAspectRatio(); }
 
         bool isFrameInProgress() const { return isFrameStarted; }
 

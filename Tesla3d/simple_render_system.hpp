@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tsl_camera.hpp"
 #include "tsl_pipeline.hpp"
 #include "tsl_device.hpp"
 #include "tsl_scene_object.hpp"
@@ -18,7 +19,7 @@ namespace tsl {
 
         SimpleRenderSystem(const SimpleRenderSystem&) = delete;
         SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete;
-        void renderObjects(VkCommandBuffer commandBuffer, std::vector<TslSceneObject> &sceneObjects);
+        void renderObjects(VkCommandBuffer commandBuffer, std::vector<TslSceneObject> &sceneObjects, const TslCamera &camera);
 
     private:
         void createPipelineLayout();
