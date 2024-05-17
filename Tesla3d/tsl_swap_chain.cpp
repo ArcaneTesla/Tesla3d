@@ -11,8 +11,7 @@
 
 namespace tsl {
 
-TslSwapChain::TslSwapChain(TslDevice &deviceRef, VkExtent2D extent)
-    : device{deviceRef}, windowExtent{extent} {
+TslSwapChain::TslSwapChain(TslDevice &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
   createSwapChain();
   createImageViews();
   createRenderPass();
@@ -359,7 +358,7 @@ void TslSwapChain::createSyncObjects() {
 VkSurfaceFormatKHR TslSwapChain::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR> &availableFormats) {
   for (const auto &availableFormat : availableFormats) {
-    if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
+    if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
         availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
       return availableFormat;
     }
@@ -376,15 +375,16 @@ VkPresentModeKHR TslSwapChain::chooseSwapPresentMode(
       return availablePresentMode;
     }
   }
-
+  // Immediate реализация 
   // for (const auto &availablePresentMode : availablePresentModes) {
   //   if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
   //     std::cout << "Present mode: Immediate" << std::endl;
   //     return availablePresentMode;
   //   }
   // }
-
-  std::cout << "Present mode: V-Sync" << std::endl;
+ 
+  // V-Sync реализация 
+  //std::cout << "Present mode: V-Sync" << std::endl;
   return VK_PRESENT_MODE_FIFO_KHR;
 }
 

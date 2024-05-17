@@ -4,6 +4,7 @@
 #include "tsl_pipeline.hpp"
 #include "tsl_device.hpp"
 #include "tsl_swap_chain.hpp"
+#include "tsl_model.hpp"
 
 #include <memory>
 #include <vector>
@@ -25,6 +26,7 @@ namespace tsl {
 		void run();
 
 	private:
+        void loadModels();
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
@@ -37,5 +39,6 @@ namespace tsl {
         std::unique_ptr<TslPipeline> tslPipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
+        std::unique_ptr<TslModel> tslModel;
 	};
 }

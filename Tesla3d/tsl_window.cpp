@@ -1,7 +1,7 @@
 #include "tsl_window.hpp"
 #include <stdexcept>
 namespace tsl {
-    TslWindow::TslWindow(int w, int h, std::string name) : width{ w }, height{ w }, windowName{ name } {
+    TslWindow::TslWindow(int w, int h, std::string name) : width{ w }, height{ h }, windowName{ name } {
         initWindow();
     }
     TslWindow::~TslWindow() {

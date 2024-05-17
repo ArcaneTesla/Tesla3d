@@ -1,9 +1,11 @@
 #include "first_test.hpp"
+
 #include <stdexcept>
 
 namespace tsl {
 
     FirstApp::FirstApp() {
+        loadModels();
         createPipelineLayout();
         createPipeline();
         createCommandBuffers();
@@ -21,6 +23,16 @@ namespace tsl {
 		}
         vkDeviceWaitIdle(tslDevice.device());
 	}
+
+    void FirstApp::loadModels() {
+        std::vector<TslModel::Vertex> vertices{
+            {{0.0f,-0.5f}, {1.0f,0.0f,0.0f}},
+            {{0.5f, 0.5f}, {0.0f,1.0f,0.0f}},
+            {{-0.5f,0.5f}, {0.0f,0.0f,1.0f}},
+        };
+
+        tslModel = std::make_unique<TslModel>(tslDevice, vertices);
+    }
 
     void FirstApp::createPipelineLayout() {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -79,7 +91,8 @@ namespace tsl {
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             tslPipeline->bind(commandBuffers[i]);
-            vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+            tslModel->bind(commandBuffers[i]);
+            tslModel->draw(commandBuffers[i]);
 
             vkCmdEndRenderPass(commandBuffers[i]);
             if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

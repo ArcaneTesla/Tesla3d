@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="first_test.cpp" />
+    <ClCompile Include="tsl_model.cpp" />
     <ClCompile Include="tsl_window.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tsl_pipeline.cpp" />
