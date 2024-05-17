@@ -135,8 +135,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="first_test.cpp" />
+    <ClCompile Include="app.cpp" />
+    <ClCompile Include="simple_render_system.cpp" />
     <ClCompile Include="tsl_model.cpp" />
+    <ClCompile Include="tsl_renderer.cpp" />
     <ClCompile Include="tsl_window.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tsl_pipeline.cpp" />
@@ -144,9 +146,11 @@
     <ClCompile Include="tsl_swap_chain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="first_test.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="simple_render_system.hpp" />
     <ClInclude Include="tsl_model.hpp" />
-    <ClInclude Include="tsl_object.hpp" />
+    <ClInclude Include="tsl_scene_object.hpp" />
+    <ClInclude Include="tsl_renderer.hpp" />
     <ClInclude Include="tsl_window.hpp" />
     <ClInclude Include="tsl_pipeline.hpp" />
     <ClInclude Include="tsl_device.hpp" />

@@ -24,7 +24,7 @@
     <ClCompile Include="tsl_window.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="first_test.cpp">
+    <ClCompile Include="app.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="tsl_pipeline.cpp">
@@ -39,12 +39,18 @@
     <ClCompile Include="tsl_model.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="tsl_renderer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_render_system.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tsl_window.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="first_test.hpp">
+    <ClInclude Include="app.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="tsl_pipeline.hpp">
@@ -59,7 +65,13 @@
     <ClInclude Include="tsl_model.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="tsl_object.hpp">
+    <ClInclude Include="tsl_scene_object.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="tsl_renderer.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_render_system.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
