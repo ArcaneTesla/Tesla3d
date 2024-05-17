@@ -35,7 +35,7 @@ class TslDevice {
 
   // Not copyable or movable
   TslDevice(const TslDevice &) = delete;
-  void operator=(const TslDevice &) = delete;
+  TslDevice &operator=(const TslDevice &) = delete;
   TslDevice(TslDevice &&) = delete;
   TslDevice &operator=(TslDevice &&) = delete;
 

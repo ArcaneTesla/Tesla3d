@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="first_test.hpp" />
     <ClInclude Include="tsl_model.hpp" />
+    <ClInclude Include="tsl_object.hpp" />
     <ClInclude Include="tsl_window.hpp" />
     <ClInclude Include="tsl_pipeline.hpp" />
     <ClInclude Include="tsl_device.hpp" />

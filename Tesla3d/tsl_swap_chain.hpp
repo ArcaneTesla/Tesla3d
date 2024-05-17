@@ -8,6 +8,7 @@
 // std lib headers
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace tsl {
 
@@ -16,10 +17,11 @@ class TslSwapChain {
   static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
   TslSwapChain(TslDevice &deviceRef, VkExtent2D windowExtent);
+  TslSwapChain(TslDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<TslSwapChain> previous);
   ~TslSwapChain();
 
   TslSwapChain(const TslSwapChain &) = delete;
-  void operator=(const TslSwapChain &) = delete;
+  TslSwapChain &operator=(const TslSwapChain &) = delete;
 
   VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
   VkRenderPass getRenderPass() { return renderPass; }
@@ -39,12 +41,13 @@ class TslSwapChain {
   VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
  private:
-  void createSwapChain();
-  void createImageViews();
-  void createDepthResources();
-  void createRenderPass();
-  void createFramebuffers();
-  void createSyncObjects();
+    void init();
+    void createSwapChain();
+    void createImageViews();
+    void createDepthResources();
+    void createRenderPass();
+    void createFramebuffers();
+    void createSyncObjects();
 
   // Helper functions
   VkSurfaceFormatKHR chooseSwapSurfaceFormat(
@@ -69,6 +72,7 @@ class TslSwapChain {
   VkExtent2D windowExtent;
 
   VkSwapchainKHR swapChain;
+  std::shared_ptr<TslSwapChain> oldSwapChain;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;
