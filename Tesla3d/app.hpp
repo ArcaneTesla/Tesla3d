@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include <stdexcept>
+#include <chrono>
 
 namespace tsl {
 	class FirstApp {

@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.280.0\Include;E:\Documents\Visual Studio 2022\Libraries\glm;E:\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.280.0\Include;E:\Documents\Visual Studio 2022\Libraries\glm;E:\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;E:\Documents\Visual Studio 2022\Libraries\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.280.0\Include;E:\Documents\Visual Studio 2022\Libraries\glm;E:\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.280.0\Include;E:\Documents\Visual Studio 2022\Libraries\glm;E:\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;E:\Documents\Visual Studio 2022\Libraries\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -136,6 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="keyboard_movement_controller.cpp" />
+    <ClCompile Include="keyboard_movement_controller.hpp" />
     <ClCompile Include="simple_render_system.cpp" />
     <ClCompile Include="tsl_camera.cpp" />
     <ClCompile Include="tsl_model.cpp" />
