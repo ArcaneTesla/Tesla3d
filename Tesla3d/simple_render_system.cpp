@@ -12,7 +12,7 @@ namespace tsl {
     struct SimplerPushConstantData
     {
         glm::mat4 transform{ 1.f };
-        alignas(16) glm::vec3 color;
+        glm::mat4 normalMatrix{ 1.f };
     };
 
     SimpleRenderSystem::SimpleRenderSystem(TslDevice& device, VkRenderPass renderPass) : tslDevice{device} {
@@ -59,11 +59,10 @@ namespace tsl {
         auto projectionView = camera.getProjection() * camera.getView();
 
         for (auto& obj : sceneObjects) {
-
-
             SimplerPushConstantData push{};
-            push.color = obj.color;
-            push.transform = projectionView * obj.transform.mat4();
+            auto modelMatrix = obj.transform.mat4();
+            push.transform = projectionView * modelMatrix;
+            push.normalMatrix = obj.transform.normalMatrix();
 
             vkCmdPushConstants(
                 commandBuffer,

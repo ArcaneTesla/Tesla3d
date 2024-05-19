@@ -139,9 +139,11 @@
     <ClCompile Include="keyboard_movement_controller.cpp" />
     <ClCompile Include="keyboard_movement_controller.hpp" />
     <ClCompile Include="simple_render_system.cpp" />
+    <ClCompile Include="tsl_buffer.cpp" />
     <ClCompile Include="tsl_camera.cpp" />
     <ClCompile Include="tsl_model.cpp" />
     <ClCompile Include="tsl_renderer.cpp" />
+    <ClCompile Include="tsl_scene_object.cpp" />
     <ClCompile Include="tsl_window.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tsl_pipeline.cpp" />
@@ -151,10 +153,12 @@
   <ItemGroup>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="simple_render_system.hpp" />
+    <ClInclude Include="tsl_buffer.hpp" />
     <ClInclude Include="tsl_camera.hpp" />
     <ClInclude Include="tsl_model.hpp" />
     <ClInclude Include="tsl_scene_object.hpp" />
     <ClInclude Include="tsl_renderer.hpp" />
+    <ClInclude Include="tsl_utils.hpp" />
     <ClInclude Include="tsl_window.hpp" />
     <ClInclude Include="tsl_pipeline.hpp" />
     <ClInclude Include="tsl_device.hpp" />

@@ -56,61 +56,22 @@ namespace tsl {
 		}
         vkDeviceWaitIdle(tslDevice.device());
 	}
-    std::unique_ptr<TslModel> createCubeModel(TslDevice& device, glm::vec3 offset) {
-        TslModel::Builder modelBuilder{};
-        modelBuilder.vertices = {
-            // left face (white)
-            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
-
-            // right face (yellow)
-            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
-
-            // top face (orange, remember y axis points down)
-            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-
-            // bottom face (red)
-            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-
-            // nose face (blue)
-            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-
-            // tail face (green)
-            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-        };
-        for (auto& v : modelBuilder.vertices) {
-            v.position += offset;
-        }
-
-        modelBuilder.indices = { 0,  1,  2,  0,  3,  1,  4,  5,  6,  4,  7,  5,  8,  9,  10, 8,  11, 9,
-                                12, 13, 14, 12, 15, 13, 16, 17, 18, 16, 19, 17, 20, 21, 22, 20, 23, 21 };
-
-        return std::make_unique<TslModel>(device, modelBuilder);
-    }
+   
     void FirstApp::loadObjects() {
-        std::shared_ptr<TslModel> TslModel = createCubeModel(tslDevice, { 0.0f,.0f,.0f });
-        auto cube = TslSceneObject::createObject();
-        cube.model = TslModel;
-        cube.transform.translation = { .0f,.0f,2.5f };
-        cube.transform.scale = { .5f,.5f,.5f };
-        sceneObjects.push_back(std::move(cube));
+        std::shared_ptr<TslModel> TslModel = 
+        TslModel::createModelFromFile(tslDevice, "models/blender_monkey_flat.obj");
+        auto flatMonkey = TslSceneObject::createObject();
+        flatMonkey.model = TslModel;
+        flatMonkey.transform.translation = { -1.f,.05f,2.5f };
+        flatMonkey.transform.scale = glm::vec3(0.5f);
+        sceneObjects.push_back(std::move(flatMonkey));
+
+        TslModel = TslModel::createModelFromFile(tslDevice, "models/blender_monkey.obj");
+        auto Monkey = TslSceneObject::createObject();
+        Monkey.model = TslModel;
+        Monkey.transform.translation = { 1.f,.05f,2.5f };
+        Monkey.transform.scale = glm::vec3(0.5f);
+        sceneObjects.push_back(std::move(Monkey));
        
     }
 
