@@ -13,7 +13,7 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="shaders">
+    <Filter Include="Файлы ресурсов\shaders">
       <UniqueIdentifier>{78e0a51a-20c7-4443-a9c5-47cd56b5e631}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -42,9 +42,6 @@
     <ClCompile Include="tsl_renderer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="simple_render_system.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="tsl_camera.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -58,6 +55,15 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="tsl_buffer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="tsl_descriptors.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_render_system.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="point_light_system.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,9 +92,6 @@
     <ClInclude Include="tsl_renderer.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="simple_render_system.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="tsl_camera.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -101,16 +104,31 @@
     <ClInclude Include="tsl_frame_info.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="tsl_descriptors.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_render_system.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="point_light_system.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple_shader.vert">
-      <Filter>shaders</Filter>
+      <Filter>Файлы ресурсов\shaders</Filter>
     </None>
     <None Include="shaders\simple_shader.frag">
-      <Filter>shaders</Filter>
+      <Filter>Файлы ресурсов\shaders</Filter>
     </None>
     <None Include="shaders\compile.bat">
-      <Filter>shaders</Filter>
+      <Filter>Файлы ресурсов\shaders</Filter>
+    </None>
+    <None Include="shaders\point_light.frag">
+      <Filter>Файлы ресурсов\shaders</Filter>
+    </None>
+    <None Include="shaders\point_light.vert">
+      <Filter>Файлы ресурсов\shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

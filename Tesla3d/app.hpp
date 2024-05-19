@@ -4,6 +4,7 @@
 #include "tsl_device.hpp"
 #include "tsl_scene_object.hpp"
 #include "tsl_renderer.hpp"
+#include "tsl_descriptors.hpp"
 
 #include <memory>
 #include <vector>
@@ -34,6 +35,8 @@ namespace tsl {
         TslDevice tslDevice{ tslWindow };
         TslRenderer tslRenderer{ tslWindow, tslDevice };
 
-        std::vector<TslSceneObject> sceneObjects;
+
+        std::unique_ptr<TslDescriptorPool> globalPool{};
+        TslSceneObject::Map sceneObjects;
 	};
 }

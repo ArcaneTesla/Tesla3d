@@ -6,6 +6,7 @@
 
 // std
 #include <memory>
+#include <unordered_map>
 
 namespace tsl {
 
@@ -23,6 +24,7 @@ namespace tsl {
     class TslSceneObject {
     public:
         using id_t = unsigned int;
+        using Map = std::unordered_map<id_t, TslSceneObject>;
 
         static TslSceneObject createObject() {
             static id_t currentId = 0;

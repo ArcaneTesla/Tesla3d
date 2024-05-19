@@ -1,4 +1,4 @@
-#include "simple_render_system.hpp"
+#include "point_light_system.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -15,21 +15,21 @@ namespace tsl {
         glm::mat4 normalMatrix{ 1.f };
     };
 
-    SimpleRenderSystem::SimpleRenderSystem(TslDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) : tslDevice{device} {
+    PointLightSystem::PointLightSystem(TslDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) : tslDevice{ device } {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
     }
 
-    SimpleRenderSystem::~SimpleRenderSystem() {
+    PointLightSystem::~PointLightSystem() {
         vkDestroyPipelineLayout(tslDevice.device(), pipelineLayout, nullptr);
     }
 
-    void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
+    void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
 
-        VkPushConstantRange pushConstantRange{};
-        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-        pushConstantRange.offset = 0;
-        pushConstantRange.size = sizeof(SimplerPushConstantData);
+//        VkPushConstantRange pushConstantRange{};
+//        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+//        pushConstantRange.offset = 0;
+//        pushConstantRange.size = sizeof(SimplerPushConstantData);
 
         std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
@@ -38,24 +38,26 @@ namespace tsl {
         pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
         pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
         pipelineLayoutInfo.pushConstantRangeCount = 1;
-        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+        pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
         if (vkCreatePipelineLayout(tslDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("Ошибка:Не удалось создать схему конвеера!");
         }
     }
 
-    void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
+    void PointLightSystem::createPipeline(VkRenderPass renderPass) {
 
         assert(pipelineLayout != nullptr && "Ошибка:Нельзя создать конвеер до pipeline layout");
         PipelineConfigInfo pipelineConfig{};
         TslPipeline::defaultPipelineConfigInfo(pipelineConfig);
+        pipelineConfig.attributeDescriptions.clear();
+        pipelineConfig.bindingDescriptions.clear();
         pipelineConfig.renderPass = renderPass;
         pipelineConfig.pipelineLayout = pipelineLayout;
-        tslPipeline = std::make_unique<TslPipeline>(tslDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
+        tslPipeline = std::make_unique<TslPipeline>(tslDevice, "shaders/point_light.vert.spv", "shaders/point_light.frag.spv", pipelineConfig);
     }
 
-    void SimpleRenderSystem::renderSceneObjects(FrameInfo& frameInfo) {
+    void PointLightSystem::render(FrameInfo& frameInfo) {
         tslPipeline->bind(frameInfo.commandBuffer);
 
         vkCmdBindDescriptorSets(
@@ -68,22 +70,6 @@ namespace tsl {
             0,
             nullptr);
 
-        for (auto& kv : frameInfo.sceneObjects) {
-            auto & obj = kv.second;
-            if (obj.model == nullptr) continue;
-            SimplerPushConstantData push{};
-            push.modelMatrix = obj.transform.mat4();
-            push.normalMatrix = obj.transform.normalMatrix();
-
-            vkCmdPushConstants(
-                frameInfo.commandBuffer,
-                pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(SimplerPushConstantData),
-                &push);
-            obj.model->bind(frameInfo.commandBuffer);
-            obj.model->draw(frameInfo.commandBuffer);
-        }
+        vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
     }
 }

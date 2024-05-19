@@ -1,6 +1,7 @@
 #include "app.hpp"
 
 #include "keyboard_movement_controller.hpp"
+#include "point_light_system.hpp"
 #include "simple_render_system.hpp"
 #include "tsl_camera.hpp"
 
@@ -14,12 +15,21 @@
 namespace tsl {
 
     struct GlobalUbo {
-        glm::mat4 projectionView{ 1.f };
-        glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f,-3.f, -1.f });
+        glm::mat4 projection{ 1.f };
+        glm::mat4 view{ 1.f };
+        glm::vec4 ambientLightColor{ 1.f,1.f,1.f, .02f };
+        glm::vec3 lightPosition{ -2.f,-1.f,-1.f };
+        alignas(16) glm::vec4 lightColor{ 1.f };
 
     };
 
-    FirstApp::FirstApp() {loadObjects();}
+    FirstApp::FirstApp() {
+        globalPool = TslDescriptorPool::Builder(tslDevice)
+            .setMaxSets(TslSwapChain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, TslSwapChain::MAX_FRAMES_IN_FLIGHT)
+            .build();
+        loadObjects();
+    }
 
     FirstApp::~FirstApp() {}
 
@@ -34,11 +44,25 @@ namespace tsl {
                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
             uboBuffers[i]->map();
         }
+        auto globalSetLayout = TslDescriptorSetLayout::Builder(tslDevice)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+            .build();
 
-        SimpleRenderSystem simpleRenderSystem{ tslDevice, tslRenderer.getSwapChainRenderPass() };
+        std::vector<VkDescriptorSet> globalDescriptorSets(TslSwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < globalDescriptorSets.size(); i++) {
+            auto bufferInfo = uboBuffers[i]->descriptorInfo();
+            TslDescriptorWriter(*globalSetLayout, *globalPool)
+                .writeBuffer(0, &bufferInfo)
+                .build(globalDescriptorSets[i]);
+        }
+
+        SimpleRenderSystem simpleRenderSystem{ tslDevice, tslRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
+        PointLightSystem pointLightLSystem{ tslDevice, tslRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
+
         TslCamera camera{};
 
         auto viewerObject = TslSceneObject::createObject();
+        viewerObject.transform.translation.z = -3.0f;
 
         KeyboardMovementController cameraController{};
 
@@ -60,7 +84,7 @@ namespace tsl {
             //ортографика
             //camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
             //перспектива
-            camera.setPerspectiveProjection(glm::radians(50.f),aspect,0.1f,10.f);
+            camera.setPerspectiveProjection(glm::radians(50.f),aspect,0.1f,100.f);
 
             if (auto commandBuffer = tslRenderer.beginFrame()) {
                 int frameIndex = tslRenderer.getFrameIndex();
@@ -68,18 +92,22 @@ namespace tsl {
                     frameIndex,
                     frameTime,
                     commandBuffer,
-                    camera
+                    camera,
+                    globalDescriptorSets[frameIndex],
+                    sceneObjects,
                 };
 
                 //обновление
                 GlobalUbo ubo{};
-                ubo.projectionView = camera.getProjection() * camera.getView();
+                ubo.projection = camera.getProjection();
+                ubo.view = camera.getView();
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
                 //отрисовка
                 tslRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderObjects(frameInfo, sceneObjects);
+                simpleRenderSystem.renderSceneObjects(frameInfo);
+                pointLightLSystem.render(frameInfo);
                 tslRenderer.endSwapChainRenderPass(commandBuffer);
                 tslRenderer.endFrame();
             }
@@ -92,17 +120,24 @@ namespace tsl {
         TslModel::createModelFromFile(tslDevice, "models/blender_monkey_flat.obj");
         auto flatMonkey = TslSceneObject::createObject();
         flatMonkey.model = TslModel;
-        flatMonkey.transform.translation = { -1.f,.05f,2.5f };
+        flatMonkey.transform.translation = { 1.f,.05f,0.f };
         flatMonkey.transform.scale = glm::vec3(0.5f);
-        sceneObjects.push_back(std::move(flatMonkey));
+        sceneObjects.emplace(flatMonkey.getId(), std::move(flatMonkey));
 
         TslModel = TslModel::createModelFromFile(tslDevice, "models/blender_monkey.obj");
         auto Monkey = TslSceneObject::createObject();
         Monkey.model = TslModel;
-        Monkey.transform.translation = { 1.f,.05f,2.5f };
+        Monkey.transform.translation = { -1.f,.05f,0.f };
         Monkey.transform.scale = glm::vec3(0.5f);
-        sceneObjects.push_back(std::move(Monkey));
-       
+        sceneObjects.emplace(Monkey.getId(), std::move(Monkey));
+        
+        TslModel = TslModel::createModelFromFile(tslDevice, "models/quad.obj");
+        auto floor = TslSceneObject::createObject();
+        floor.model = TslModel;
+        floor.transform.translation = { 0.f,0.54f,0.f };
+        floor.transform.scale = glm::vec3(2.5f);
+        sceneObjects.emplace(floor.getId(), std::move(floor));
+
     }
 
 }

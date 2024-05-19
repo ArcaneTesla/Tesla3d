@@ -138,9 +138,11 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="keyboard_movement_controller.cpp" />
     <ClCompile Include="keyboard_movement_controller.hpp" />
+    <ClCompile Include="point_light_system.cpp" />
     <ClCompile Include="simple_render_system.cpp" />
     <ClCompile Include="tsl_buffer.cpp" />
     <ClCompile Include="tsl_camera.cpp" />
+    <ClCompile Include="tsl_descriptors.cpp" />
     <ClCompile Include="tsl_model.cpp" />
     <ClCompile Include="tsl_renderer.cpp" />
     <ClCompile Include="tsl_scene_object.cpp" />
@@ -152,9 +154,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
+    <ClInclude Include="point_light_system.hpp" />
     <ClInclude Include="simple_render_system.hpp" />
     <ClInclude Include="tsl_buffer.hpp" />
     <ClInclude Include="tsl_camera.hpp" />
+    <ClInclude Include="tsl_descriptors.hpp" />
     <ClInclude Include="tsl_frame_info.hpp" />
     <ClInclude Include="tsl_model.hpp" />
     <ClInclude Include="tsl_scene_object.hpp" />
@@ -167,6 +171,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\compile.bat" />
+    <None Include="shaders\point_light.frag" />
+    <None Include="shaders\point_light.vert" />
     <None Include="shaders\simple_shader.frag" />
     <None Include="shaders\simple_shader.vert" />
   </ItemGroup>
