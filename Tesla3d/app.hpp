@@ -10,6 +10,7 @@
 #include <array>
 #include <stdexcept>
 #include <chrono>
+#include <numeric>
 
 namespace tsl {
 	class FirstApp {

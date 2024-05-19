@@ -1,7 +1,12 @@
-#pragma once
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/compatibility.hpp>
 
 #include "tsl_scene_object.hpp"
 #include "tsl_window.hpp"
+
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 namespace tsl {
     class KeyboardMovementController {
@@ -23,7 +28,5 @@ namespace tsl {
 
         KeyMappings keys{};
         float moveSpeed{ 3.f };
-        float lookSpeed{ 1.5f };
     };
 }
-

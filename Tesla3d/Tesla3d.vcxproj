@@ -155,6 +155,7 @@
     <ClInclude Include="simple_render_system.hpp" />
     <ClInclude Include="tsl_buffer.hpp" />
     <ClInclude Include="tsl_camera.hpp" />
+    <ClInclude Include="tsl_frame_info.hpp" />
     <ClInclude Include="tsl_model.hpp" />
     <ClInclude Include="tsl_scene_object.hpp" />
     <ClInclude Include="tsl_renderer.hpp" />

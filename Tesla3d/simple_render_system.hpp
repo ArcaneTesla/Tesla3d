@@ -4,6 +4,7 @@
 #include "tsl_pipeline.hpp"
 #include "tsl_device.hpp"
 #include "tsl_scene_object.hpp"
+#include "tsl_frame_info.hpp"
 
 #include <memory>
 #include <vector>
@@ -19,7 +20,8 @@ namespace tsl {
 
         SimpleRenderSystem(const SimpleRenderSystem&) = delete;
         SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete;
-        void renderObjects(VkCommandBuffer commandBuffer, std::vector<TslSceneObject> &sceneObjects, const TslCamera &camera);
+
+        void renderObjects(FrameInfo &frame, std::vector<TslSceneObject> &sceneObjects);
 
     private:
         void createPipelineLayout();

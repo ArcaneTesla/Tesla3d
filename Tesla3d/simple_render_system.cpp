@@ -53,10 +53,10 @@ namespace tsl {
         tslPipeline = std::make_unique<TslPipeline>(tslDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
     }
 
-    void SimpleRenderSystem::renderObjects(VkCommandBuffer commandBuffer, std::vector<TslSceneObject>& sceneObjects, const TslCamera& camera) {
-        tslPipeline->bind(commandBuffer);
+    void SimpleRenderSystem::renderObjects(FrameInfo& frameInfo, std::vector<TslSceneObject>& sceneObjects) {
+        tslPipeline->bind(frameInfo.commandBuffer);
 
-        auto projectionView = camera.getProjection() * camera.getView();
+        auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView();
 
         for (auto& obj : sceneObjects) {
             SimplerPushConstantData push{};
@@ -65,14 +65,14 @@ namespace tsl {
             push.normalMatrix = obj.transform.normalMatrix();
 
             vkCmdPushConstants(
-                commandBuffer,
+                frameInfo.commandBuffer,
                 pipelineLayout,
                 VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
                 0,
                 sizeof(SimplerPushConstantData),
                 &push);
-            obj.model->bind(commandBuffer);
-            obj.model->draw(commandBuffer);
+            obj.model->bind(frameInfo.commandBuffer);
+            obj.model->draw(frameInfo.commandBuffer);
         }
     }
 }

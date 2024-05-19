@@ -13,11 +13,28 @@
 
 namespace tsl {
 
+    struct GlobalUbo {
+        glm::mat4 projectionView{ 1.f };
+        glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f,-3.f, -1.f });
+
+    };
+
     FirstApp::FirstApp() {loadObjects();}
 
     FirstApp::~FirstApp() {}
 
 	void FirstApp::run() {
+        std::vector<std::unique_ptr<TslBuffer>> uboBuffers(TslSwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < uboBuffers.size(); i++) {
+            uboBuffers[i] = std::make_unique<TslBuffer>(
+                tslDevice,
+                sizeof(GlobalUbo),
+                1,
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+            uboBuffers[i]->map();
+        }
+
         SimpleRenderSystem simpleRenderSystem{ tslDevice, tslRenderer.getSwapChainRenderPass() };
         TslCamera camera{};
 
@@ -46,10 +63,23 @@ namespace tsl {
             camera.setPerspectiveProjection(glm::radians(50.f),aspect,0.1f,10.f);
 
             if (auto commandBuffer = tslRenderer.beginFrame()) {
+                int frameIndex = tslRenderer.getFrameIndex();
+                FrameInfo frameInfo{
+                    frameIndex,
+                    frameTime,
+                    commandBuffer,
+                    camera
+                };
+
+                //обновление
+                GlobalUbo ubo{};
+                ubo.projectionView = camera.getProjection() * camera.getView();
+                uboBuffers[frameIndex]->writeToBuffer(&ubo);
+                uboBuffers[frameIndex]->flush();
+
+                //отрисовка
                 tslRenderer.beginSwapChainRenderPass(commandBuffer);
-
-                simpleRenderSystem.renderObjects(commandBuffer, sceneObjects, camera);
-
+                simpleRenderSystem.renderObjects(frameInfo, sceneObjects);
                 tslRenderer.endSwapChainRenderPass(commandBuffer);
                 tslRenderer.endFrame();
             }
