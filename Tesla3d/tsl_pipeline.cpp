@@ -188,4 +188,17 @@ namespace tsl {
         configInfo.bindingDescriptions = TslModel::Vertex::getBindingDescriptions();
         configInfo.attributeDescriptions = TslModel::Vertex::getAttributeDescriptions();
     }
+
+    void TslPipeline::enableAlphaBlending(PipelineConfigInfo& configInfo) {
+        configInfo.colorBlendAttachment.blendEnable = VK_TRUE;
+        configInfo.colorBlendAttachment.colorWriteMask =
+            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |
+            VK_COLOR_COMPONENT_A_BIT;
+        configInfo.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;   // Optional
+        configInfo.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;  // Optional
+        configInfo.colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;              // Optional
+        configInfo.colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;   // Optional
+        configInfo.colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;  // Optional
+        configInfo.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+    }
 }

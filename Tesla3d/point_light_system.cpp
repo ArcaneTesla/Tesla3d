@@ -6,13 +6,15 @@
 #include <glm/gtc/constants.hpp>
 
 #include <stdexcept>
+#include <map>
 
 namespace tsl {
 
-    struct SimplerPushConstantData
-    {
-        glm::mat4 modelMatrix{ 1.f };
-        glm::mat4 normalMatrix{ 1.f };
+
+    struct PointLightPushConstants {
+        glm::vec4 position{};
+        glm::vec4 color{};
+        float radius;
     };
 
     PointLightSystem::PointLightSystem(TslDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) : tslDevice{ device } {
@@ -26,10 +28,10 @@ namespace tsl {
 
     void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
 
-//        VkPushConstantRange pushConstantRange{};
-//        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-//        pushConstantRange.offset = 0;
-//        pushConstantRange.size = sizeof(SimplerPushConstantData);
+        VkPushConstantRange pushConstantRange{};
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+        pushConstantRange.offset = 0;
+        pushConstantRange.size = sizeof(PointLightPushConstants);
 
         std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
@@ -38,7 +40,7 @@ namespace tsl {
         pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
         pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
         pipelineLayoutInfo.pushConstantRangeCount = 1;
-        pipelineLayoutInfo.pPushConstantRanges = nullptr;
+        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
         if (vkCreatePipelineLayout(tslDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("Ошибка:Не удалось создать схему конвеера!");
@@ -48,16 +50,51 @@ namespace tsl {
     void PointLightSystem::createPipeline(VkRenderPass renderPass) {
 
         assert(pipelineLayout != nullptr && "Ошибка:Нельзя создать конвеер до pipeline layout");
+
         PipelineConfigInfo pipelineConfig{};
         TslPipeline::defaultPipelineConfigInfo(pipelineConfig);
+        TslPipeline::enableAlphaBlending(pipelineConfig);
+
         pipelineConfig.attributeDescriptions.clear();
         pipelineConfig.bindingDescriptions.clear();
         pipelineConfig.renderPass = renderPass;
         pipelineConfig.pipelineLayout = pipelineLayout;
         tslPipeline = std::make_unique<TslPipeline>(tslDevice, "shaders/point_light.vert.spv", "shaders/point_light.frag.spv", pipelineConfig);
     }
+    void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo &ubo) {
+        auto rotateLight = glm::rotate(glm::mat4(1.f), 0.5f * frameInfo.frameTime, { 0.f, -1.f, 0.f });
+        int lightIndex = 0;
+        for (auto& kv : frameInfo.sceneObjects) {
+            auto& obj = kv.second;
+            if (obj.pointLight == nullptr) continue;
+
+            assert(lightIndex < MAX_LIGHTS && "Point lights exceed maximum specified");
+
+            // update light position
+            obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
+
+            // copy light to ubo
+            ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.f);
+            ubo.pointLights[lightIndex].color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+
+            lightIndex += 1;
+        }
+        ubo.numLights = lightIndex;
+    }
 
     void PointLightSystem::render(FrameInfo& frameInfo) {
+        // sort lights
+        std::map<float, TslSceneObject::id_t> sorted;
+        for (auto& kv : frameInfo.sceneObjects) {
+            auto& obj = kv.second;
+            if (obj.pointLight == nullptr) continue;
+
+            // calculate distance
+            auto offset = frameInfo.camera.getPosition() - obj.transform.translation;
+            float disSquared = glm::dot(offset, offset);
+            sorted[disSquared] = obj.getId();
+        }
+
         tslPipeline->bind(frameInfo.commandBuffer);
 
         vkCmdBindDescriptorSets(
@@ -70,6 +107,24 @@ namespace tsl {
             0,
             nullptr);
 
-        vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+        for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
+            auto& obj = frameInfo.sceneObjects.at(it->second);
+
+            PointLightPushConstants push{};
+            push.position = glm::vec4(obj.transform.translation, 1.f);
+            push.color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+            push.radius = obj.transform.scale.x;
+
+            vkCmdPushConstants(
+                frameInfo.commandBuffer,
+                pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(PointLightPushConstants),
+                &push
+            );
+
+            vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+        }
     }
 }

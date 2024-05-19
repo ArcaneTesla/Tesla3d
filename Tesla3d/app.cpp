@@ -14,15 +14,6 @@
 
 namespace tsl {
 
-    struct GlobalUbo {
-        glm::mat4 projection{ 1.f };
-        glm::mat4 view{ 1.f };
-        glm::vec4 ambientLightColor{ 1.f,1.f,1.f, .02f };
-        glm::vec3 lightPosition{ -2.f,-1.f,-1.f };
-        alignas(16) glm::vec4 lightColor{ 1.f };
-
-    };
-
     FirstApp::FirstApp() {
         globalPool = TslDescriptorPool::Builder(tslDevice)
             .setMaxSets(TslSwapChain::MAX_FRAMES_IN_FLIGHT)
@@ -101,13 +92,17 @@ namespace tsl {
                 GlobalUbo ubo{};
                 ubo.projection = camera.getProjection();
                 ubo.view = camera.getView();
+                ubo.inverseView = camera.getInverseView();
+                pointLightLSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
                 //отрисовка
                 tslRenderer.beginSwapChainRenderPass(commandBuffer);
+
                 simpleRenderSystem.renderSceneObjects(frameInfo);
                 pointLightLSystem.render(frameInfo);
+
                 tslRenderer.endSwapChainRenderPass(commandBuffer);
                 tslRenderer.endFrame();
             }
@@ -138,6 +133,26 @@ namespace tsl {
         floor.transform.scale = glm::vec3(2.5f);
         sceneObjects.emplace(floor.getId(), std::move(floor));
 
+        std::vector<glm::vec3> lightColors{
+            {1.f, .1f, .1f},
+            {.1f, .1f, 1.f},
+            {.1f, 1.f, .1f},
+            {1.f, 1.f, .1f},
+            {.1f, 1.f, 1.f},
+            {1.f, 1.f, 1.f}  //
+        };
+
+        for (int i = 0; i < lightColors.size(); i++) {
+            auto pointLight = TslSceneObject::makePointLight(0.8f);
+            pointLight.color = lightColors[i];
+            auto rotateLight = glm::rotate(
+                glm::mat4(1.f),
+                (i * glm::two_pi<float>()) / lightColors.size(),
+                { 0.f, -1.f, 0.f });
+            pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+            sceneObjects.emplace(pointLight.getId(), std::move(pointLight));
+        }
+        
     }
 
 }
